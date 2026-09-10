@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SOM - Stock Opname Mandiri</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HTML5 Qrcode untuk Scanner -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    /* iOS Style Tweaks */
+    body { background-color: #f2f2f7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    .ios-card { background: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .ios-input { background: #f2f2f7; border: none; border-radius: 10px; padding: 12px 16px; width: 100%; outline: none; transition: 0.2s; }
+    .ios-input:focus { background: #e5e5ea; }
+    .ios-btn { background: #007aff; color: white; border-radius: 12px; font-weight: 600; text-align: center; padding: 14px; width: 100%; transition: opacity 0.2s; }
+    .ios-btn:active { opacity: 0.7; }
+    .view { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="text-gray-900 antialiased overflow-x-hidden">
+
+  <!-- ================= VIEW: LOGIN ================= -->
+  <div id="login-view" class="view active min-h-screen flex flex-col justify-center items-center p-6">
+    <div class="ios-card w-full max-w-sm p-8 space-y-6">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold tracking-tight">SOM</h1>
+        <p class="text-sm text-gray-500 mt-1">Stock Opname Mandiri</p>
+      </div>
+      
+      <form id="login-form" class="space-y-4">
+        <div>
+          <input type="text" id="username" class="ios-input" placeholder="Username" required>
+        </div>
+        <div class="relative">
+          <input type="password" id="password" class="ios-input" placeholder="Password" minlength="6" required>
+          <button type="button" id="toggle-pwd" class="absolute right-4 top-3 text-gray-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+          </button>
+        </div>
+        <button type="submit" class="ios-btn mt-2">Masuk</button>
+      </form>
+      
+      <div class="text-center">
+        <button class="text-sm text-[#007aff]">Lupa Password?</button>
+      </div>
+    </div>
+    <button id="install-btn" class="mt-8 text-sm text-gray-500 hidden bg-white px-4 py-2 rounded-full shadow-sm">↓ Install App ke Home Screen</button>
+  </div>
+
+  <!-- ================= VIEW: DASHBOARD ================= -->
+  <div id="dashboard-view" class="view min-h-screen pb-20">
+    <div class="bg-white px-6 pt-12 pb-6 shadow-sm rounded-b-3xl">
+      <h2 class="text-sm text-gray-500 uppercase tracking-wider">Dashboard</h2>
+      <h1 class="text-2xl font-bold mt-1">Halo, <span id="user-display"></span></h1>
+    </div>
+    
+    <div class="p-6 grid grid-cols-2 gap-4">
+      <div onclick="navigate('so-view')" class="ios-card p-6 flex flex-col items-center justify-center space-y-3 cursor-pointer">
+        <div class="bg-blue-100 p-3 rounded-full text-blue-600">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+        </div>
+        <span class="font-semibold text-gray-700">Scan SO</span>
+      </div>
+      
+      <div class="ios-card p-6 flex flex-col items-center justify-center space-y-3 cursor-pointer">
+        <div class="bg-green-100 p-3 rounded-full text-green-600">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <span class="font-semibold text-gray-700">Verifikasi</span>
+      </div>
+      
+      <div class="ios-card p-6 flex flex-col items-center justify-center space-y-3 cursor-pointer">
+        <div class="bg-orange-100 p-3 rounded-full text-orange-600">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        </div>
+        <span class="font-semibold text-gray-700">Report</span>
+      </div>
+      
+      <div id="btn-sync" class="ios-card p-6 flex flex-col items-center justify-center space-y-3 cursor-pointer">
+        <div class="bg-purple-100 p-3 rounded-full text-purple-600">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        </div>
+        <span class="font-semibold text-gray-700">Sync Data</span>
+        <span id="sync-badge" class="text-xs text-red-500 font-bold hidden">Ada Data Pending</span>
+      </div>
+    </div>
+    
+    <div class="px-6">
+      <button onclick="logout()" class="w-full bg-red-100 text-red-600 font-semibold py-3 rounded-xl mt-4">Keluar</button>
+    </div>
+  </div>
+
+  <!-- ================= VIEW: MENU SO ================= -->
+  <div id="so-view" class="view min-h-screen flex flex-col bg-gray-50">
+    <div class="bg-white px-4 py-4 flex items-center shadow-sm sticky top-0 z-10">
+      <button onclick="navigate('dashboard-view')" class="text-[#007aff] font-semibold flex items-center">
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> Back
+      </button>
+      <h1 class="flex-1 text-center font-bold text-lg mr-8">Scan SO</h1>
+    </div>
+    
+    <div class="p-4 space-y-4">
+      <div class="ios-card p-4">
+        <label class="text-xs font-semibold text-gray-500 uppercase">Lokasi Rak / Area</label>
+        <input type="text" id="so-lokasi" class="ios-input mt-2 border border-gray-200" placeholder="Contoh: RAK-A1" required>
+      </div>
+
+      <div class="ios-card overflow-hidden relative">
+        <div id="reader" width="100%"></div>
+        <div class="p-4 text-center">
+          <button id="btn-start-scan" class="ios-btn bg-gray-900">Mulai Kamera Scanner</button>
+          <p class="text-xs text-gray-400 mt-3">Atau input manual barcode di bawah</p>
+        </div>
+      </div>
+
+      <form id="so-form" class="ios-card p-4 space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase">Barcode / UPC</label>
+          <input type="text" id="so-barcode" class="ios-input mt-1 border border-gray-200" placeholder="Scan atau Ketik Manual..." required>
+        </div>
+        <div id="product-info" class="hidden bg-blue-50 p-3 rounded-lg border border-blue-100 text-sm">
+          <!-- Info produk hasil lookup akan muncul di sini -->
+        </div>
+        <div class="flex space-x-4">
+          <div class="flex-1">
+            <label class="text-xs font-semibold text-gray-500 uppercase">Qty SO</label>
+            <input type="number" id="so-qty" class="ios-input mt-1 border border-gray-200 text-lg font-bold" required>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-500 uppercase">Keterangan (Opsional)</label>
+          <input type="text" id="so-ket" class="ios-input mt-1 border border-gray-200" placeholder="-">
+        </div>
+        <button type="submit" class="ios-btn">Simpan Data SO</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script Logika -->
+  <script src="js/app.js"></script>
+</body>
+</html>
