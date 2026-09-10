@@ -1,0 +1,16 @@
+{
+  "name": "Stock Opname Mandiri",
+  "short_name": "SOM",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2558/2558066.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
